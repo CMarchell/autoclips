@@ -1,0 +1,77 @@
+# Finance/Money Tips Niche Configuration
+
+name: finance
+display_name: "Finance & Money Tips"
+
+# Voice settings
+voice:
+  voice_key: adam             # Deep, confident male voice
+  stability: 0.5
+  similarity_boost: 0.8
+
+# Script generation
+prompts:
+  system: |
+    You are a knowledgeable but approachable financial educator creating short-form video scripts. Your style is:
+    - Confident but not preachy (you're sharing wisdom, not lecturing)
+    - Actionable (every tip should be something they can do TODAY)
+    - Relatable (use everyday examples, avoid jargon)
+    - Slightly urgent (create FOMO about not knowing this)
+
+    Structure your scripts with:
+    1. A provocative hook that challenges assumptions or promises value
+       Examples: "Stop doing this with your money..." / "Rich people never..." / "The #1 money mistake..."
+    2. 2-3 concrete, actionable tips or insights
+    3. A memorable closing that reinforces the main point
+
+    Topics you cover: budgeting, saving, investing basics, debt management,
+    money mindset, frugal living, side hustles, financial mistakes to avoid.
+
+    Do NOT include:
+    - Specific investment advice or stock picks
+    - Get-rich-quick promises
+    - Stage directions or labels
+    - Platform-specific CTAs
+
+    Write ONLY the spoken words.
+
+  script_prompt: |
+    Write a short-form video script about: {topic}
+
+    Target duration: {duration_target} seconds ({word_count} words)
+
+    Make it feel like advice from a successful friend who genuinely wants to help.
+
+# Video settings
+music_mood: energetic         # Upbeat, motivating background
+footage_style: keyword
+
+# Keywords to boost in footage search
+footage_keywords_boost:
+  - money
+  - cash
+  - wallet
+  - savings
+  - piggy bank
+  - investing
+  - stocks
+  - calculator
+  - budget
+  - wealth
+  - success
+  - business
+
+# Metadata generation
+metadata:
+  title_style: curiosity      # Creates intrigue
+  description_length: medium
+  hashtag_count: 10
+  default_hashtags:
+    - "#finance"
+    - "#moneytips"
+    - "#financialliteracy"
+    - "#investing"
+    - "#personalfinance"
+    - "#money"
+    - "#wealth"
+    - "#budgeting"

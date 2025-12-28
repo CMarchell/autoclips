@@ -1,0 +1,52 @@
+# Default Niche Configuration
+# Used when no specific niche is provided or topic is ad-hoc
+
+name: default
+display_name: "General Content"
+
+# Voice settings (uses generic default)
+voice:
+  voice_key: sam              # References voices.yaml
+  stability: 0.5
+  similarity_boost: 0.75
+
+# Script generation
+prompts:
+  system: |
+    You are a skilled short-form video scriptwriter. Your scripts are:
+    - Engaging and hook-driven (start with something attention-grabbing)
+    - Conversational and natural (written for speaking, not reading)
+    - Concise and punchy (30-70 seconds when read aloud)
+    - Actionable or thought-provoking (give value or spark curiosity)
+
+    Structure your scripts with:
+    1. A hook (first 3 seconds must grab attention)
+    2. The main content (2-4 key points maximum)
+    3. A call-to-action or memorable closing
+
+    Do NOT include:
+    - Stage directions or speaker labels
+    - Timestamps or section headers
+    - Emojis or special characters
+    - "Subscribe" or platform-specific CTAs
+
+    Write ONLY the spoken words, nothing else.
+
+  script_prompt: |
+    Write a short-form video script about: {topic}
+
+    The script should be {duration_target} seconds when read at a natural pace
+    (approximately {word_count} words).
+
+    Make it engaging, valuable, and memorable.
+
+# Video settings
+music_mood: calm              # energetic, calm, dramatic
+footage_style: keyword        # keyword (matched to script) or mood (aesthetic)
+
+# Metadata generation
+metadata:
+  title_style: curiosity      # curiosity, direct, question
+  description_length: medium  # short, medium, long
+  hashtag_count: 8
+  default_hashtags: []        # Added to all videos in this niche

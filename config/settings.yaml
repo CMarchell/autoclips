@@ -1,0 +1,67 @@
+# AutoClips Global Settings
+
+# Video output settings
+video:
+  duration_min: 30          # Minimum video length in seconds
+  duration_max: 70          # Maximum video length in seconds
+  width: 1080               # Video width (9:16 vertical)
+  height: 1920              # Video height
+  fps: 30                   # Frames per second
+
+# Caption settings
+captions:
+  enabled: true
+  style: word_by_word       # word_by_word, sentence
+  font: Arial-Bold
+  font_size: 70
+  color: "#FFFFFF"
+  stroke_color: "#000000"
+  stroke_width: 3
+  position: center          # center, bottom
+
+# Hook text overlay
+hook_text:
+  enabled: true
+  font_size: 90
+  duration: 3               # How long hook text appears (seconds)
+  position: top_center
+
+# Music settings
+music:
+  enabled: true
+  volume: 0.15              # Background music volume (0-1)
+  fade_in: 1.0              # Fade in duration (seconds)
+  fade_out: 2.0             # Fade out duration (seconds)
+
+# AI provider settings
+ai:
+  default_provider: anthropic   # anthropic or openai
+  anthropic_model: claude-sonnet-4-20250514
+  openai_model: gpt-4o
+  temperature: 0.8
+
+# ElevenLabs defaults
+elevenlabs:
+  model_id: eleven_monolingual_v1
+  stability: 0.5
+  similarity_boost: 0.75
+  style: 0.0
+  use_speaker_boost: true
+
+# Pexels settings
+pexels:
+  per_page: 15              # Results per search
+  min_duration: 5           # Minimum clip length (seconds)
+  orientation: portrait     # portrait for vertical videos
+
+# Deduplication settings
+deduplication:
+  topic_cooldown_days: 30   # Don't repeat topics within this period
+  footage_cooldown_count: 10  # Don't reuse footage within N videos
+
+# Output paths (relative to project root)
+paths:
+  projects: projects
+  output: output
+  assets: assets
+  database: data/autoclips.db

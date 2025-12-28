@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+.uv/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Project generated files
+projects/
+output/
+data/*.db
+assets/footage/
+assets/voiceovers/
+
+# Keep music directory structure but not files
+assets/music/*/*.mp3
+assets/music/*/*.wav
+!assets/music/*/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test
+.pytest_cache/
+.coverage
+htmlcov/

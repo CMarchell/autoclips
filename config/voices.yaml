@@ -1,0 +1,72 @@
+# ElevenLabs Voice Catalog
+# Find more voices at: https://elevenlabs.io/voice-library
+
+voices:
+  # Male voices
+  adam:
+    voice_id: "pNInz6obpgDQGcFmaJgB"
+    name: "Adam"
+    description: "Deep, confident American male. Great for finance, business, authority."
+    gender: male
+    tone: authoritative
+
+  josh:
+    voice_id: "TxGEqnHWrfWFTfGW9XjX"
+    name: "Josh"
+    description: "Young, energetic American male. Great for casual, upbeat content."
+    gender: male
+    tone: energetic
+
+  arnold:
+    voice_id: "VR6AewLTigWG4xSOukaG"
+    name: "Arnold"
+    description: "Crisp, articulate American male. Great for educational content."
+    gender: male
+    tone: professional
+
+  # Female voices
+  rachel:
+    voice_id: "21m00Tcm4TlvDq8ikWAM"
+    name: "Rachel"
+    description: "Calm, warm American female. Great for wellness, lifestyle."
+    gender: female
+    tone: warm
+
+  domi:
+    voice_id: "AZnzlk1XvdvUeBnXmlld"
+    name: "Domi"
+    description: "Strong, confident American female. Great for motivational content."
+    gender: female
+    tone: confident
+
+  bella:
+    voice_id: "EXAVITQu4vr4xnSDxMaL"
+    name: "Bella"
+    description: "Soft, friendly American female. Great for storytelling."
+    gender: female
+    tone: friendly
+
+  # Neutral/versatile
+  elli:
+    voice_id: "MF3mGyEYCl7XYWbV9V6O"
+    name: "Elli"
+    description: "Young, clear American female. Versatile for most content types."
+    gender: female
+    tone: versatile
+
+  sam:
+    voice_id: "yoZ06aMxZJJ28mfd3POQ"
+    name: "Sam"
+    description: "Neutral, clear American male. Versatile for most content types."
+    gender: male
+    tone: versatile
+
+# Default voice per mood/niche type
+defaults:
+  finance: adam
+  motivation: domi
+  education: arnold
+  lifestyle: rachel
+  tech: josh
+  storytelling: bella
+  generic: sam
