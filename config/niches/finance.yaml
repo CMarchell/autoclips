@@ -46,20 +46,20 @@ prompts:
 music_mood: energetic         # Upbeat, motivating background
 footage_style: keyword
 
-# Keywords to boost in footage search
+# Keywords to boost in footage search (use American/English specific terms)
 footage_keywords_boost:
-  - money
-  - cash
-  - wallet
-  - savings
-  - piggy bank
-  - investing
-  - stocks
-  - calculator
-  - budget
-  - wealth
-  - success
-  - business
+  - US dollars
+  - american cash
+  - USD bills
+  - wallet dollars
+  - piggy bank coins
+  - stock market chart
+  - calculator finance
+  - american business
+  - success celebration
+  - laptop finance
+  - credit card payment
+  - banking app
 
 # Metadata generation
 metadata:

@@ -41,7 +41,7 @@ class VideoProject(Base):
 
     # Relationships
     footage_clips = relationship("FootageUsage", back_populates="project")
-    metadata = relationship("VideoMetadata", back_populates="project", uselist=False)
+    video_metadata = relationship("VideoMetadata", back_populates="project", uselist=False)
 
 
 class FootageUsage(Base):
@@ -76,7 +76,7 @@ class VideoMetadata(Base):
     platform_youtube = Column(Text, nullable=True)
     platform_instagram = Column(Text, nullable=True)
 
-    project = relationship("VideoProject", back_populates="metadata")
+    project = relationship("VideoProject", back_populates="video_metadata")
 
 
 class TopicHistory(Base):

@@ -1,30 +1,71 @@
 """Assemble final video from components."""
 
 import random
+import subprocess
 from pathlib import Path
 from typing import Optional
 
-from moviepy.editor import (
+from moviepy import (
     AudioFileClip,
+    ColorClip,
     CompositeAudioClip,
     CompositeVideoClip,
     VideoFileClip,
-    concatenate_videoclips,
 )
+from moviepy.audio.fx import AudioFadeIn, AudioFadeOut, AudioLoop, MultiplyVolume
+from moviepy.video.fx import Loop
 
 from ..core.config import get_assets_dir, settings
 from ..core.project import Project, TimelineEntry
-from .captions import generate_word_timestamps, render_captions, render_hook_text
+from .captions import generate_word_timestamps, load_word_timestamps, render_captions, render_hook_text
 
 
-def assemble_video(project: Project) -> Path:
+# Cache for GPU availability check
+_gpu_available: Optional[bool] = None
+
+
+def _check_nvidia_gpu() -> bool:
+    """Check if NVIDIA GPU encoding is available via ffmpeg."""
+    global _gpu_available
+
+    if _gpu_available is not None:
+        return _gpu_available
+
+    try:
+        # Check if ffmpeg has h264_nvenc encoder
+        result = subprocess.run(
+            ["ffmpeg", "-hide_banner", "-encoders"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        _gpu_available = "h264_nvenc" in result.stdout
+        if _gpu_available:
+            print("[GPU] NVIDIA h264_nvenc encoder detected - using GPU acceleration")
+        else:
+            print("[GPU] NVIDIA encoder not found - using CPU encoding")
+    except Exception:
+        _gpu_available = False
+        print("[GPU] Could not detect encoders - using CPU encoding")
+
+    return _gpu_available
+
+
+def _get_video_codec() -> str:
+    """Get the best available video codec."""
+    if _check_nvidia_gpu():
+        return "h264_nvenc"
+    return "libx264"
+
+
+def assemble_video(project: Project) -> CompositeVideoClip:
     """Assemble a complete video from project components.
 
     Args:
         project: The project to assemble
 
     Returns:
-        Path to the assembled video
+        The assembled video clip
     """
     # Load voiceover
     if not project.voiceover_path.exists():
@@ -36,9 +77,12 @@ def assemble_video(project: Project) -> Path:
     # Build video from footage clips
     video = _build_video_track(project, total_duration)
 
-    # Add captions
-    script = project.get_script() or ""
-    word_timestamps = generate_word_timestamps(script, total_duration)
+    # Add captions - use real timestamps from ElevenLabs if available
+    word_timestamps = load_word_timestamps(project.voiceover_path)
+    if not word_timestamps:
+        # Fallback to calculated timestamps
+        script = project.get_script() or ""
+        word_timestamps = generate_word_timestamps(script, total_duration)
     video = render_captions(video, word_timestamps)
 
     # Add hook text
@@ -50,10 +94,10 @@ def assemble_video(project: Project) -> Path:
     final_audio = _build_audio_track(voiceover, project, total_duration)
 
     # Combine video and audio
-    final_video = video.set_audio(final_audio)
+    final_video = video.with_audio(final_audio)
 
     # Set duration
-    final_video = final_video.set_duration(total_duration)
+    final_video = final_video.with_duration(total_duration)
 
     return final_video
 
@@ -73,8 +117,6 @@ def _build_video_track(project: Project, duration: float) -> CompositeVideoClip:
 
     if not footage_clips:
         # Create a black background if no footage
-        from moviepy.editor import ColorClip
-
         return ColorClip(
             size=(video_settings.width, video_settings.height),
             color=(0, 0, 0),
@@ -108,10 +150,10 @@ def _build_video_track(project: Project, duration: float) -> CompositeVideoClip:
             if clip.duration < actual_duration:
                 # Loop the clip
                 loops_needed = int(actual_duration / clip.duration) + 1
-                clip = clip.loop(n=loops_needed)
+                clip = clip.with_effects([Loop(n=loops_needed)])
 
-            clip = clip.subclip(0, actual_duration)
-            clip = clip.set_start(current_time)
+            clip = clip.subclipped(0, actual_duration)
+            clip = clip.with_start(current_time)
 
             video_clips.append(clip)
 
@@ -135,8 +177,6 @@ def _build_video_track(project: Project, duration: float) -> CompositeVideoClip:
     project.set_timeline(timeline)
 
     if not video_clips:
-        from moviepy.editor import ColorClip
-
         return ColorClip(
             size=(video_settings.width, video_settings.height),
             color=(0, 0, 0),
@@ -161,7 +201,7 @@ def _resize_and_crop(
     # Resize
     new_width = int(clip.w * scale)
     new_height = int(clip.h * scale)
-    clip = clip.resize((new_width, new_height))
+    clip = clip.resized((new_width, new_height))
 
     # Crop to center
     x_center = new_width // 2
@@ -169,7 +209,7 @@ def _resize_and_crop(
     x1 = x_center - target_width // 2
     y1 = y_center - target_height // 2
 
-    clip = clip.crop(x1=x1, y1=y1, width=target_width, height=target_height)
+    clip = clip.cropped(x1=x1, y1=y1, width=target_width, height=target_height)
 
     return clip
 
@@ -202,17 +242,19 @@ def _build_audio_track(
                 # Loop music if needed
                 if music.duration < duration:
                     loops = int(duration / music.duration) + 1
-                    music = music.loop(n=loops)
+                    music = music.with_effects([AudioLoop(n_loops=loops)])
 
-                music = music.subclip(0, duration)
+                music = music.subclipped(0, duration)
 
-                # Apply volume and fades
-                music = music.volumex(music_settings.volume)
+                # Apply volume and fades using effects
+                effects = [MultiplyVolume(music_settings.volume)]
 
                 if music_settings.fade_in > 0:
-                    music = music.audio_fadein(music_settings.fade_in)
+                    effects.append(AudioFadeIn(music_settings.fade_in))
                 if music_settings.fade_out > 0:
-                    music = music.audio_fadeout(music_settings.fade_out)
+                    effects.append(AudioFadeOut(music_settings.fade_out))
+
+                music = music.with_effects(effects)
 
                 audio_clips.append(music)
 
@@ -273,17 +315,26 @@ def render_preview(project: Project) -> Path:
         Path to preview video
     """
     final_video = assemble_video(project)
-
     output_path = project.preview_path
+    codec = _get_video_codec()
 
-    # Render at lower quality for preview
+    # Build ffmpeg params based on codec
+    ffmpeg_params = []
+    if codec == "h264_nvenc":
+        # NVIDIA GPU encoding - use fast preset
+        ffmpeg_params = ["-preset", "p1", "-tune", "ll", "-rc", "vbr", "-cq", "28"]
+    else:
+        # CPU encoding
+        ffmpeg_params = ["-preset", "ultrafast"]
+
     final_video.write_videofile(
         str(output_path),
         fps=settings.video.fps,
-        codec="libx264",
+        codec=codec,
         audio_codec="aac",
-        preset="ultrafast",
+        ffmpeg_params=ffmpeg_params,
         threads=4,
+        logger=None,
     )
 
     # Clean up
@@ -302,18 +353,26 @@ def render_final(project: Project) -> Path:
         Path to final video
     """
     final_video = assemble_video(project)
-
     output_path = project.final_path
+    codec = _get_video_codec()
 
-    # Render at high quality
+    # Build ffmpeg params based on codec
+    ffmpeg_params = []
+    if codec == "h264_nvenc":
+        # NVIDIA GPU encoding - high quality
+        ffmpeg_params = ["-preset", "p5", "-tune", "hq", "-rc", "vbr", "-cq", "19", "-b:v", "8M"]
+    else:
+        # CPU encoding
+        ffmpeg_params = ["-preset", "medium", "-b:v", "8M"]
+
     final_video.write_videofile(
         str(output_path),
         fps=settings.video.fps,
-        codec="libx264",
+        codec=codec,
         audio_codec="aac",
-        bitrate="8000k",
-        preset="medium",
+        ffmpeg_params=ffmpeg_params,
         threads=4,
+        logger=None,
     )
 
     # Clean up

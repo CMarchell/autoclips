@@ -7,21 +7,22 @@ video:
   width: 1080               # Video width (9:16 vertical)
   height: 1920              # Video height
   fps: 30                   # Frames per second
+  clips_per_video: 10       # Number of b-roll clips (more = faster cuts)
 
 # Caption settings
 captions:
   enabled: true
-  style: word_by_word       # word_by_word, sentence
-  font: Arial-Bold
-  font_size: 70
+  style: sentence           # word_by_word, sentence
+  font: arialbd.ttf         # Use .ttf filename on Windows
+  font_size: 80             # Large, readable captions
   color: "#FFFFFF"
   stroke_color: "#000000"
-  stroke_width: 3
-  position: center          # center, bottom
+  stroke_width: 4           # Thicker stroke for visibility
+  position: center          # center position for captions
 
-# Hook text overlay
+# Hook text overlay (disabled - conflicts with captions)
 hook_text:
-  enabled: true
+  enabled: false
   font_size: 90
   duration: 3               # How long hook text appears (seconds)
   position: top_center
@@ -42,7 +43,7 @@ ai:
 
 # ElevenLabs defaults
 elevenlabs:
-  model_id: eleven_monolingual_v1
+  model_id: eleven_multilingual_v2    # Updated from deprecated eleven_monolingual_v1
   stability: 0.5
   similarity_boost: 0.75
   style: 0.0

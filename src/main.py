@@ -57,7 +57,7 @@ def create(
         console.print(f"[red]Error: {result.get('error')}[/]")
         raise typer.Exit(1)
 
-    console.print(f"\n[green]✓ Project created: {result['project_id']}[/]")
+    console.print(f"\n[green]Project created: {result['project_id']}[/]")
     console.print(f"[dim]Steps completed: {', '.join(result.get('steps_completed', []))}[/]")
 
     if result.get("duration"):
@@ -205,7 +205,7 @@ def preview(
         console.print(f"[red]Error: {result['error']}[/]")
         raise typer.Exit(1)
 
-    console.print(f"\n[green]✓ Preview rendered![/]")
+    console.print(f"\n[green][OK] Preview rendered![/]")
     console.print(f"[dim]Path: {result.get('preview_path')}[/]")
     console.print(f"\n[yellow]Next: autoclips approve {project_id}[/]")
 
@@ -224,7 +224,7 @@ def approve(
         console.print(f"[red]Error: {result['error']}[/]")
         raise typer.Exit(1)
 
-    console.print(f"\n[green]✓ Video approved and ready![/]")
+    console.print(f"\n[green][OK] Video approved and ready![/]")
     console.print(f"[dim]Path: {result.get('final_path')}[/]")
 
 
@@ -240,7 +240,7 @@ def kill(
         console.print(f"[red]Error: {result['error']}[/]")
         raise typer.Exit(1)
 
-    console.print(f"[yellow]✓ {result.get('message')}[/]")
+    console.print(f"[yellow][OK] {result.get('message')}[/]")
 
 
 @app.command("update-script")
@@ -262,7 +262,7 @@ def update_script_cmd(
         console.print(f"[red]Error: {result['error']}[/]")
         raise typer.Exit(1)
 
-    console.print(f"[green]✓ Script updated![/]")
+    console.print(f"[green][OK] Script updated![/]")
     console.print(f"[dim]{result.get('message')}[/]")
 
 
@@ -279,7 +279,7 @@ def remove_footage_cmd(
         raise typer.Exit(1)
 
     if result.get("status") == "removed":
-        console.print(f"[green]✓ {result.get('message')}[/]")
+        console.print(f"[green][OK] {result.get('message')}[/]")
     else:
         console.print(f"[yellow]{result.get('message')}[/]")
 
@@ -298,7 +298,7 @@ def regen_voice_cmd(
         console.print(f"[red]Error: {result['error']}[/]")
         raise typer.Exit(1)
 
-    console.print(f"[green]✓ Voiceover regenerated![/]")
+    console.print(f"[green][OK] Voiceover regenerated![/]")
     console.print(f"[dim]Duration: {result.get('duration', 0):.1f}s[/]")
 
 

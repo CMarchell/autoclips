@@ -14,17 +14,18 @@ class VideoSettings(BaseModel):
     width: int = 1080
     height: int = 1920
     fps: int = 30
+    clips_per_video: int = 10
 
 
 class CaptionSettings(BaseModel):
     enabled: bool = True
-    style: str = "word_by_word"
-    font: str = "Arial-Bold"
-    font_size: int = 70
+    style: str = "sentence"
+    font: str = "arialbd.ttf"
+    font_size: int = 60
     color: str = "#FFFFFF"
     stroke_color: str = "#000000"
     stroke_width: int = 3
-    position: str = "center"
+    position: str = "bottom"
 
 
 class HookTextSettings(BaseModel):
@@ -49,7 +50,7 @@ class AISettings(BaseModel):
 
 
 class ElevenLabsSettings(BaseModel):
-    model_id: str = "eleven_monolingual_v1"
+    model_id: str = "eleven_multilingual_v2"
     stability: float = 0.5
     similarity_boost: float = 0.75
     style: float = 0.0

@@ -211,6 +211,14 @@ def _extract_keywords(
     if boost_keywords:
         boost_text = f"\nPrefer these types of visuals when relevant: {', '.join(boost_keywords)}"
 
+    # Locale-specific instructions for American/English content
+    locale_text = """
+IMPORTANT locale requirements:
+- For money/currency shots: use "US dollars", "american money", "USD cash" (NOT generic "money" which returns foreign currency)
+- For text/books/signs: specify "english text" or "american" to avoid foreign language content
+- For business/office: prefer "american office", "US business"
+- Avoid keywords that commonly return non-English or non-American results"""
+
     prompt = f"""Extract {count + 2} visual keywords from this script for searching stock footage.
 
 Script:
@@ -224,8 +232,9 @@ Requirements:
 - Vary the keywords to create visual variety
 - Avoid abstract concepts that don't film well
 {boost_text}
+{locale_text}
 
-Return ONLY a JSON array of keywords, e.g.: ["keyword1", "keyword2", ...]"""
+Return ONLY a JSON array of keywords, e.g.: ["US dollars cash", "american businessman", "laptop typing", ...]"""
 
     response = call_llm(prompt, temperature=0.7)
 

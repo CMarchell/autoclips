@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(uv run autoclips --help:*)",
+      "Bash(uv run python:*)",
+      "Bash(uv run:*)"
     ]
   }
 }

@@ -92,7 +92,9 @@ def create_video(
         result["duration"] = voice_result["duration"]
 
         # Fetch footage
-        footage_list = get_footage_for_script(script_result["script"], niche, clips_needed=5)
+        from ..core.config import settings
+        clips_needed = settings.video.clips_per_video
+        footage_list = get_footage_for_script(script_result["script"], niche, clips_needed=clips_needed)
 
         for i, footage in enumerate(footage_list):
             filename = f"{i + 1:03d}_{footage['matched_keyword'].replace(' ', '-')[:20]}.mp4"

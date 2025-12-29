@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "autoclips"
 version = "0.1.0"
@@ -41,6 +45,9 @@ dev = [
 
 [project.scripts]
 autoclips = "src.main:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
 
 [tool.ruff]
 line-length = 100
